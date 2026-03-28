@@ -6,7 +6,8 @@ import json
 from pytz import timezone
 from datetime import datetime, timedelta
 
-vaga = Blueprint('vagas',__name__)
+vaga = Blueprint('vagas', __name__)
+
 
 @vaga.route('/Cadastrar')
 def Cadastrar():
