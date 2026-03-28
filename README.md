@@ -68,3 +68,13 @@ pip install -r requirements.txt  # Instala as dependências listadas no arquivo 
 ```bash
 python main.py
 ```
+
+## Atualizações de segurança aplicadas
+
+- Adicionado controle de acesso via `flask_login` em rotas críticas:
+  - `User`: list, listCodUser, createUser, updateUser, removeUser
+  - `vagas`: Cadastrar, cadastro, consultaVagas, reserva
+  - `CartoesRFID`: cadastroCartao, atualizarCartao, ListCartao, FiltrarUser
+- Implementado decorator `admin_required` em rotas de administração (somente `ADMIN` pode alterar usuários/vagas/cartões).
+- Mantido `Traffic.list` com `login_required`, `Traffic.register` continua pública para integração RFID (se necessário).
+- Recomendado: colocar `debug=False` em produção e usar variáveis de ambiente seguras (`SECRET_KEY`, `SQLALCHEMY_DATABASE_URI`).

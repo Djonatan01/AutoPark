@@ -2,10 +2,12 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from Src.Controller.Users import UserController
 from Src.Model.BancoDados import Usuarios
 from flask_login import login_required
+from config import admin_required
 from Src.Model import Regex
 from werkzeug.security import generate_password_hash
 
 User = Blueprint('user', __name__)
+
 
 @User.route('/list', defaults={'page': 1}, methods=['GET'])
 @User.route('/list/<int:page>', methods=['GET'])
@@ -18,19 +20,23 @@ def listUser(page):
 
 
 @User.route('/listCodUser')
+@login_required
+@admin_required
 def listCodUser():
     ultimo_cod_user = Usuarios.query.order_by(Usuarios.codUser.desc()).first()
-    if not ultimo_cod_user is  None:
-      partes = ultimo_cod_user.codUser.split("-")
-      _ultimoNumero = int(partes[-1]) + 1
-      novoCodUser = "127-USER-000" + str(_ultimoNumero)
+    if not ultimo_cod_user is None:
+        partes = ultimo_cod_user.codUser.split("-")
+        _ultimoNumero = int(partes[-1]) + 1
+        novoCodUser = "127-USER-000" + str(_ultimoNumero)
     else:
-      novoCodUser = "127-ADMIN-001"
+        novoCodUser = "127-ADMIN-001"
 
     return render_template('criarUsuarios.html', novoCodUser=novoCodUser)
 
 
 @User.route('/createUser', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def createUser():
     _coduser = request.form.get('codUser')
     _nome = request.form.get('nome')
@@ -61,18 +67,19 @@ def createUser():
                     flash('Celular inválido', 'error')
 
     ultimo_cod_user = Usuarios.query.order_by(Usuarios.codUser.desc()).first()
-    if not ultimo_cod_user is  None:
-      partes = ultimo_cod_user.codUser.split("-")
-      _ultimoNumero = int(partes[-1]) + 1
-      novoCodUser = "127-USER-000" + str(_ultimoNumero)
+    if not ultimo_cod_user is None:
+        partes = ultimo_cod_user.codUser.split("-")
+        _ultimoNumero = int(partes[-1]) + 1
+        novoCodUser = "127-USER-000" + str(_ultimoNumero)
     else:
-      novoCodUser = "127-ADMIN-001"
+        novoCodUser = "127-ADMIN-001"
 
     return render_template('criarUsuarios.html', novoCodUser=novoCodUser)
 
 
 @User.route('/<int:id>/updateUser', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def updateUser(id):
     _user = Usuarios.query.filter_by(id=id).first()
     if request.method == 'POST':
@@ -93,6 +100,7 @@ def updateUser(id):
 
 @User.route('/<int:id>/removeUser', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def removeUser(id):
     UserController.removeUser(id)
     return redirect(url_for('router.user.listUser'))
