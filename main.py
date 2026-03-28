@@ -12,5 +12,4 @@ def page_not_found(e):
 if __name__ == '__main__':
   app.app_context().push()
   db.create_all()
-
-app.run(debug=True)
+  app.run()
